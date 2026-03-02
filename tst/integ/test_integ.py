@@ -1,9 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
-from src.main import app
+from src.service.service import app
 
 
-class IntegrationTest:
+class TestIntegration:
     @pytest.fixture
     def client(self):
         with TestClient(app) as client:
