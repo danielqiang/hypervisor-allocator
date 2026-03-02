@@ -4,10 +4,8 @@ import os
 
 
 def get_hosts_fpath() -> str:
-    BASE_DIR = Path(__file__).resolve().parent
-
-    DEFAULT_HOSTS_PATH = BASE_DIR / "hosts.json"
-    HOSTS_FILE_PATH = os.getenv("HOSTS_CONFIG_PATH", str(DEFAULT_HOSTS_PATH))
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+    HOSTS_FILE_PATH = PROJECT_ROOT / os.getenv("HOSTS_CONFIG_PATH", "hosts.json")
     return HOSTS_FILE_PATH
 
 
