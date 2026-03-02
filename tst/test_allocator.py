@@ -1,6 +1,6 @@
 import pytest
 
-from src.allocator import HypervisorAllocator, InsufficientResourcesError
+from src.allocator.engine import HypervisorAllocator, InsufficientResourcesError
 
 
 class TestAllocator:

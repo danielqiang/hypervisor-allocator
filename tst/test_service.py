@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 
-from src.service import app, get_allocator
+from src.service.service import app, get_allocator
 
 
 class TestService:
