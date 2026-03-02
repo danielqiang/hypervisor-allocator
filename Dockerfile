@@ -29,4 +29,4 @@ EXPOSE 8080
 
 # The CMD needs to point to the 'app' object inside 'src/main.py'
 # We use --host 0.0.0.0 to allow external traffic
-CMD ["uvicorn", "src.service:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]

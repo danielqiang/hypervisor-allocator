@@ -1,4 +1,3 @@
-import json
 from dataclasses import dataclass, field
 
 
@@ -46,8 +45,6 @@ class UnknownDropletIDError(AllocatorError):
     pass
 
 
-
-
 class HypervisorAllocator:
     def __init__(self, hosts_json: list[dict]):
         hosts = [
@@ -62,7 +59,13 @@ class HypervisorAllocator:
         self.droplets = dict()  # vm id -> VM
         self.anti_affinity_groups = dict()  # group name -> host id
 
-    def provision(self, droplet_id: str, cpu_req: float, ram_req: float, anti_affinity_group: str = None) -> str:
+    def provision(
+        self,
+        droplet_id: str,
+        cpu_req: float,
+        ram_req: float,
+        anti_affinity_group: str = None,
+    ) -> str:
         if droplet_id in self.droplets:
             raise DropletAlreadyProvisioned
 
@@ -70,7 +73,10 @@ class HypervisorAllocator:
         min_overhead = float("inf")
 
         for host in self.hosts.values():
-            if anti_affinity_group is not None and host.id in self.anti_affinity_groups.get(anti_affinity_group, []):
+            if (
+                anti_affinity_group is not None
+                and host.id in self.anti_affinity_groups.get(anti_affinity_group, [])
+            ):
                 continue
             if cpu_req <= host.cpu_remaining and ram_req <= host.ram_remaining:
                 overhead = host.cpu_remaining - cpu_req + host.ram_remaining - ram_req
@@ -109,29 +115,7 @@ class HypervisorAllocator:
         total_cpu_used = sum(vm.cpu_required for vm in self.droplets.values())
         total_ram_used = sum(vm.ram_required for vm in self.droplets.values())
 
-        return (total_cpu_used / total_cpu_available, total_ram_used / total_ram_available)
-
-
-
-
-def main():
-    with open("../hosts.json") as f:
-        data = json.load(f)
-
-    allocator = HypervisorAllocator(hosts_json=data["hosts"])
-
-    vm1 = ("droplet1", 8, 8)
-    vm2 = ("droplet2", 12, 6)
-    vm3 = ("droplet3", 4, 8)
-
-    hosts = []
-    for vm in (vm1, vm2, vm3):
-        host = allocator.provision(*vm)
-        hosts.append(host)
-
-    for host in allocator.hosts.values():
-        print(host.id, host.ram_remaining, host.cpu_remaining)
-
-
-if __name__ == "__main__":
-    main()
+        return (
+            total_cpu_used / total_cpu_available,
+            total_ram_used / total_ram_available,
+        )

@@ -5,6 +5,7 @@ from unittest.mock import MagicMock
 
 from src.service import app, get_allocator
 
+
 class TestService:
     """
     single provision call small vm succeeds
@@ -30,13 +31,13 @@ class TestService:
         with TestClient(app) as client:
             yield client
 
-
     def test_allocator_provision_succeeds_yields_201(self, client, mock_allocator):
         host_id = "host1"
         mock_allocator.provision.return_value = host_id
 
-        response = client.post("/provision", json={"id": "vm1", "ram_required": 2, "cpu_required":2})
+        response = client.post(
+            "/provision", json={"id": "vm1", "ram_required": 2, "cpu_required": 2}
+        )
 
         assert response.status_code == 201
         assert response.json()["host_id"] == host_id
-
