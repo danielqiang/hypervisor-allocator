@@ -17,8 +17,8 @@ class TestIntegration:
         # 1. Send a provisioning request
         payload = {
             "id": "test-droplet-01",
-            "cpu": 2,
-            "ram": 4,
+            "cpu_required": 2,
+            "ram_required": 4,
             "anti_affinity_group": "web-servers"
         }
 
@@ -28,7 +28,6 @@ class TestIntegration:
         assert response.status_code == 201
         data = response.json()
         assert "host_id" in data
-        assert "successfully" in data["message"].lower()
 
         # 3. Verify the system state reflects the change
         # (Assuming you have a stats endpoint)

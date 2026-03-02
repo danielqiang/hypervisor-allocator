@@ -67,13 +67,14 @@ class Droplet(BaseModel):
     id: str
     cpu_required: float
     ram_required: float
+    anti_affinity_group: str = None
 
 
 @app.post("/provision/", status_code=status.HTTP_201_CREATED)
 async def provision(droplet: Droplet, allocator=Depends(get_allocator)):
     async with app.state.write_mutex:
         host_id = allocator.provision(
-            droplet.id, droplet.cpu_required, droplet.ram_required
+            droplet.id, droplet.cpu_required, droplet.ram_required, droplet.anti_affinity_group
         )
 
     return {"status": "success", "host_id": host_id}
