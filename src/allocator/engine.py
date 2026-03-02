@@ -1,4 +1,8 @@
 from dataclasses import dataclass, field
+from structlog import get_logger
+
+
+logger = get_logger()
 
 
 @dataclass
@@ -66,6 +70,13 @@ class HypervisorAllocator:
         ram_req: float,
         anti_affinity_group: str = None,
     ) -> str:
+        logger.info(
+            "Provisioning Request Received",
+            droplet_id=droplet_id,
+            requested_cpu=cpu_req,
+            requested_ram=ram_req
+        )
+
         if droplet_id in self.droplets:
             raise DropletAlreadyProvisioned
 
@@ -97,6 +108,12 @@ class HypervisorAllocator:
 
         self.droplets[droplet_id] = vm
         self.hosts[selected_host].allocated_vms[droplet_id] = vm
+
+        logger.info(
+            "Provisioned Host",
+            droplet_id=droplet_id,
+            assigned_host=selected_host,
+        )
 
         return selected_host
 

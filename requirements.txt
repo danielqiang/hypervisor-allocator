@@ -22,6 +22,7 @@ pytest==9.0.2
 pytest-anyio==0.0.0
 pytokens==0.4.1
 starlette==0.52.1
+structlog==25.5.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 uvicorn==0.41.0

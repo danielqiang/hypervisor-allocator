@@ -4,6 +4,7 @@ from fastapi import FastAPI, status, Depends
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from structlog import get_logger
 
 from src.allocator.engine import (
     HypervisorAllocator,
@@ -14,6 +15,7 @@ from src.allocator.engine import (
 from src.helpers.util import get_hosts_fpath, load_config
 
 app = FastAPI()
+logger = get_logger()
 
 _allocator = HypervisorAllocator(load_config(get_hosts_fpath())["hosts"])
 
@@ -27,6 +29,12 @@ app.state.write_mutex = asyncio.Lock()
 
 @app.exception_handler(RuntimeError)
 async def generic_exception_handler(request: Request, exc: RuntimeError):
+    logger.error(
+        path=request.url.path,
+        method=request.method,
+        error=str(exc),
+        exc_info=True
+    )
     return JSONResponse(
         status_code=500,
         content={"error": "Unknown Error", "details": str(exc)},
@@ -37,6 +45,12 @@ async def generic_exception_handler(request: Request, exc: RuntimeError):
 async def insufficient_resources_exception_handler(
     request: Request, exc: InsufficientResourcesError
 ):
+    logger.error(
+        path=request.url.path,
+        method=request.method,
+        error=str(exc),
+        exc_info=True
+    )
     return JSONResponse(
         status_code=200,
         content={"error": "Insufficient Resources", "details": str(exc)},
@@ -47,6 +61,12 @@ async def insufficient_resources_exception_handler(
 async def droplet_already_provisioned_exception_handler(
     request: Request, exc: DropletAlreadyProvisioned
 ):
+    logger.error(
+        path=request.url.path,
+        method=request.method,
+        error=str(exc),
+        exc_info=True
+    )
     return JSONResponse(
         status_code=403,
         content={"error": "Droplet Already Provisioned", "details": str(exc)},
@@ -57,6 +77,12 @@ async def droplet_already_provisioned_exception_handler(
 async def unknown_droplet_id_exception_handler(
     request: Request, exc: UnknownDropletIDError
 ):
+    logger.error(
+        path=request.url.path,
+        method=request.method,
+        error=str(exc),
+        exc_info=True
+    )
     return JSONResponse(
         status_code=403,
         content={"error": "Unknown Droplet ID", "details": str(exc)},
