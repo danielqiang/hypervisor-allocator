@@ -1,0 +1,19 @@
+{
+  "hosts": [
+    {
+      "id": "host1",
+      "cpu_available": 16,
+      "ram_available": 16
+    },
+    {
+      "id": "host2",
+      "cpu_available": 12,
+      "ram_available": 12
+    },
+    {
+      "id": "host3",
+      "cpu_available": 32,
+      "ram_available": 24
+    }
+  ]
+}
